@@ -15,6 +15,7 @@ import javax.swing.JComboBox;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.BoxLayout;
+import javax.swing.JList;
 
 public class PanelMateria extends JPanel {
 
@@ -117,11 +118,48 @@ public class PanelMateria extends JPanel {
 		gbc_panelEstudiantes.gridy = 1;
 		add(panelEstudiantes, gbc_panelEstudiantes);
 		GridBagLayout gbl_panelEstudiantes = new GridBagLayout();
-		gbl_panelEstudiantes.columnWidths = new int[]{0};
-		gbl_panelEstudiantes.rowHeights = new int[]{0};
-		gbl_panelEstudiantes.columnWeights = new double[]{Double.MIN_VALUE};
-		gbl_panelEstudiantes.rowWeights = new double[]{Double.MIN_VALUE};
+		gbl_panelEstudiantes.columnWidths = new int[]{0, 0, 0, 0};
+		gbl_panelEstudiantes.rowHeights = new int[]{0, 0, 0};
+		gbl_panelEstudiantes.columnWeights = new double[]{1.0, 1.0, 1.0, Double.MIN_VALUE};
+		gbl_panelEstudiantes.rowWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
 		panelEstudiantes.setLayout(gbl_panelEstudiantes);
+		
+		JLabel lblNewLabel_3 = new JLabel("New label");
+		GridBagConstraints gbc_lblNewLabel_3 = new GridBagConstraints();
+		gbc_lblNewLabel_3.insets = new Insets(0, 0, 5, 5);
+		gbc_lblNewLabel_3.gridx = 0;
+		gbc_lblNewLabel_3.gridy = 0;
+		panelEstudiantes.add(lblNewLabel_3, gbc_lblNewLabel_3);
+		
+		JLabel lblNewLabel_4 = new JLabel("New label");
+		GridBagConstraints gbc_lblNewLabel_4 = new GridBagConstraints();
+		gbc_lblNewLabel_4.insets = new Insets(0, 0, 5, 0);
+		gbc_lblNewLabel_4.gridx = 2;
+		gbc_lblNewLabel_4.gridy = 0;
+		panelEstudiantes.add(lblNewLabel_4, gbc_lblNewLabel_4);
+		
+		JList list_1 = new JList();
+		GridBagConstraints gbc_list_1 = new GridBagConstraints();
+		gbc_list_1.insets = new Insets(0, 0, 0, 5);
+		gbc_list_1.fill = GridBagConstraints.BOTH;
+		gbc_list_1.gridx = 0;
+		gbc_list_1.gridy = 1;
+		panelEstudiantes.add(list_1, gbc_list_1);
+		
+		JPanel panel = new JPanel();
+		GridBagConstraints gbc_panel = new GridBagConstraints();
+		gbc_panel.insets = new Insets(0, 0, 0, 5);
+		gbc_panel.fill = GridBagConstraints.BOTH;
+		gbc_panel.gridx = 1;
+		gbc_panel.gridy = 1;
+		panelEstudiantes.add(panel, gbc_panel);
+		
+		JList list = new JList();
+		GridBagConstraints gbc_list = new GridBagConstraints();
+		gbc_list.fill = GridBagConstraints.BOTH;
+		gbc_list.gridx = 2;
+		gbc_list.gridy = 1;
+		panelEstudiantes.add(list, gbc_list);
 		
 		JButton btnGuardar = new JButton("Guardar las notas de todos los alumnos seleccionados");
 		btnGuardar.addActionListener(new ActionListener() {
