@@ -9,9 +9,9 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "profesor")
 public class Profesor {
-	
-	@Id  
-	@GeneratedValue(strategy=GenerationType.AUTO)
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
 	private String nombre;
 	private String apellido1;
@@ -23,7 +23,7 @@ public class Profesor {
 	private int idTipologiaSexo;
 	private Byte imagen;
 	private String colorPreferido;
-	
+
 	public Profesor() {
 		super();
 	}
@@ -115,6 +115,10 @@ public class Profesor {
 	public void setColorPreferido(String colorPreferido) {
 		this.colorPreferido = colorPreferido;
 	}
-	
-	
+
+	@Override
+	public String toString() {
+		return nombre;
+	}
+
 }

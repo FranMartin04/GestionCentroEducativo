@@ -1,5 +1,7 @@
 package centroEducativo.entities;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -8,7 +10,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "materia")
-public class Materia {
+public class Materia extends centroEducativo.entities.Entidad implements Serializable{
 
 	@Id  
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -52,6 +54,12 @@ public class Materia {
 	public void setCurso_id(int curso_id) {
 		this.curso_id = curso_id;
 	}
+
+	@Override
+	public String toString() {
+		return nombre;
+	}
+	
 	
 	
 	

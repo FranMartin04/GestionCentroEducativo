@@ -29,7 +29,7 @@ public class SuperControlador {
 	 */
 	protected EntityManager getEntityManager () {
 		if (em == null) {
-			em = Persistence.createEntityManagerFactory("centroEducativo")
+			em = Persistence.createEntityManagerFactory("CentroEducativo")
 				.createEntityManager();
 		}
 		return em;
@@ -39,7 +39,7 @@ public class SuperControlador {
 	/**
 	 * 
 	 */
-	private List<Entidad> findAll () {
+	public List<? extends Entidad> findAll () {
 		return (List<Entidad>) 
 		getEntityManager()
 		.createNativeQuery("SELECT * FROM " + this.nombreTabla, this.tipoEntidad)

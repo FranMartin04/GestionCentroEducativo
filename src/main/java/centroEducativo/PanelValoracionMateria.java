@@ -5,6 +5,10 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import centroEducativo.controladores.ControladorMateria;
+import centroEducativo.entities.Materia;
+
 import java.awt.GridBagLayout;
 import javax.swing.JButton;
 import java.awt.GridBagConstraints;
@@ -14,6 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JComboBox;
 import javax.swing.JList;
 import java.awt.event.ActionListener;
+import java.util.List;
 import java.awt.event.ActionEvent;
 
 public class PanelValoracionMateria extends JFrame {
@@ -22,9 +27,6 @@ public class PanelValoracionMateria extends JFrame {
 	private JPanel contentPane;
 	
 
-	/**
-	 * Launch the application.
-	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -39,9 +41,7 @@ public class PanelValoracionMateria extends JFrame {
 		});
 	}
 
-	/**
-	 * Create the frame.
-	 */
+
 	public PanelValoracionMateria() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 661, 540);
@@ -78,8 +78,12 @@ public class PanelValoracionMateria extends JFrame {
 		gbc_lblNewLabel.gridx = 0;
 		gbc_lblNewLabel.gridy = 0;
 		panel_1.add(lblNewLabel, gbc_lblNewLabel);
-		
-		JComboBox jcbMateria = new JComboBox();
+		JComboBox<Materia> jcbMateria = new JComboBox<>();
+		List<Materia> lista = (List<Materia>) ControladorMateria.getInstance().findAll();
+		for (Materia materia : lista) {
+		    jcbMateria.addItem(materia);
+		}
+		// Elimina esta línea -> jcbMateria = new JComboBox();
 		GridBagConstraints gbc_jcbMateria = new GridBagConstraints();
 		gbc_jcbMateria.gridwidth = 3;
 		gbc_jcbMateria.insets = new Insets(0, 0, 5, 0);
@@ -248,4 +252,5 @@ public class PanelValoracionMateria extends JFrame {
 		contentPane.add(btnGuardar, gbc_btnGuardar);
 	}
 
+	
 }
