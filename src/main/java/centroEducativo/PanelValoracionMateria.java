@@ -7,7 +7,9 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import centroEducativo.controladores.ControladorMateria;
+import centroEducativo.controladores.ControladorProfesor;
 import centroEducativo.entities.Materia;
+import centroEducativo.entities.Profesor;
 
 import java.awt.GridBagLayout;
 import javax.swing.JButton;
@@ -100,7 +102,11 @@ public class PanelValoracionMateria extends JFrame {
 		gbc_lblNewLabel_1.gridy = 1;
 		panel_1.add(lblNewLabel_1, gbc_lblNewLabel_1);
 		
-		JComboBox jcbProfesor = new JComboBox();
+		JComboBox<Profesor> jcbProfesor = new JComboBox<>();
+		List<Profesor> liProfesor = (List<Profesor>) ControladorProfesor.getInstance().findAll();
+		for (Materia materia : lista) {
+		    jcbMateria.addItem(materia);
+		}
 		GridBagConstraints gbc_jcbProfesor = new GridBagConstraints();
 		gbc_jcbProfesor.gridwidth = 3;
 		gbc_jcbProfesor.insets = new Insets(0, 0, 5, 0);
@@ -135,6 +141,7 @@ public class PanelValoracionMateria extends JFrame {
 		gbc_btnActualiza.gridx = 3;
 		gbc_btnActualiza.gridy = 3;
 		panel_1.add(btnActualiza, gbc_btnActualiza);
+		
 		
 		JPanel panel = new JPanel();
 		panel.setBackground(new Color(255, 255, 255));
