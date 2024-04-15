@@ -23,7 +23,6 @@ public class Estudiante  extends centroEducativo.entities.Entidad implements Ser
 	private String email;
 	private String telefono;
 	private int idTipologiaSexo;
-	private Byte imagen;
 	private String colorPreferido;
 
 	public Estudiante() {
@@ -102,13 +101,6 @@ public class Estudiante  extends centroEducativo.entities.Entidad implements Ser
 		this.idTipologiaSexo = idTipologiaSexo;
 	}
 
-	public Byte getImagen() {
-		return imagen;
-	}
-
-	public void setImagen(Byte imagen) {
-		this.imagen = imagen;
-	}
 
 	public String getColorPreferido() {
 		return colorPreferido;
