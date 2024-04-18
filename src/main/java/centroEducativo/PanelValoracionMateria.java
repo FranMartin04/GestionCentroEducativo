@@ -9,9 +9,11 @@ import javax.swing.border.EmptyBorder;
 import centroEducativo.controladores.ControladorEstudiante;
 import centroEducativo.controladores.ControladorMateria;
 import centroEducativo.controladores.ControladorProfesor;
+import centroEducativo.controladores.ControladorValoracionMateria;
 import centroEducativo.entities.Estudiante;
 import centroEducativo.entities.Materia;
 import centroEducativo.entities.Profesor;
+import centroEducativo.entities.ValoracionMateria;
 
 import java.awt.GridBagLayout;
 import javax.swing.JButton;
@@ -23,6 +25,7 @@ import javax.swing.JComboBox;
 import javax.swing.JList;
 import javax.swing.DefaultListModel;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 import java.awt.event.ActionEvent;
 
@@ -37,6 +40,9 @@ public class PanelValoracionMateria extends JFrame {
 	JComboBox<Materia> jcbMateria = new JComboBox<>();
 	JComboBox<Profesor> jcbProfesor = new JComboBox<>();
 	JComboBox<Integer> jcbNota = new JComboBox<>();
+	private int indiceProximalistaEstudiantesSeleccionados = 0;
+	private int indiceProximalistaEstudiantesNoSeleccionados = 0;
+	private List<Estudiante> estudiantes = new ArrayList<Estudiante>();
 	// private List<Estudiante> estudiantes =
 	// ControladorEstudiante.getInstance().findPorEstudiante();
 
@@ -128,9 +134,8 @@ public class PanelValoracionMateria extends JFrame {
 		gbc_lblNewLabel_2.gridy = 2;
 		panel_1.add(lblNewLabel_2, gbc_lblNewLabel_2);
 
-
 		for (int i = 0; i <= 10; i++) {
-		    jcbNota.addItem(Integer.valueOf(i));
+			jcbNota.addItem(Integer.valueOf(i));
 		}
 
 		GridBagConstraints gbc_jcbNota = new GridBagConstraints();
@@ -144,7 +149,7 @@ public class PanelValoracionMateria extends JFrame {
 		JButton btnActualiza = new JButton("Boton actualizar alumnado");
 		btnActualiza.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				cargarEstudiantes();
 			}
 		});
 		GridBagConstraints gbc_btnActualiza = new GridBagConstraints();
@@ -181,7 +186,7 @@ public class PanelValoracionMateria extends JFrame {
 		gbc_lblNewLabel_4.gridy = 0;
 		panel.add(lblNewLabel_4, gbc_lblNewLabel_4);
 
-		listANS = new JList<>(); 
+		listANS = new JList<>();
 		GridBagConstraints gbc_listANS = new GridBagConstraints();
 		gbc_listANS.insets = new Insets(0, 0, 0, 5);
 		gbc_listANS.fill = GridBagConstraints.BOTH;
@@ -277,6 +282,11 @@ public class PanelValoracionMateria extends JFrame {
 		panel.add(listAS, gbc_listAS);
 
 		JButton btnGuardar = new JButton("Guardar las notas de todos los alumnos seleccionados");
+		btnGuardar.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent arg0) {
+		    	guardar();
+		    }
+		});
 		GridBagConstraints gbc_btnGuardar = new GridBagConstraints();
 		gbc_btnGuardar.anchor = GridBagConstraints.EAST;
 		gbc_btnGuardar.gridx = 0;
@@ -288,6 +298,7 @@ public class PanelValoracionMateria extends JFrame {
 		this.listModelEstudiante = new DefaultListModel<Estudiante>();
 		return this.listModelEstudiante;
 	}
+
 	private DefaultListModel getDefaultListModelEstuSi() {
 		this.listModelEstudianteSel = new DefaultListModel<Estudiante>();
 		return this.listModelEstudianteSel;
@@ -331,36 +342,65 @@ public class PanelValoracionMateria extends JFrame {
 
 		}
 	}
-//	private void actualizarListas() {
-//	    // Obtener la materia seleccionada
-//	    Materia materiaSeleccionada = (Materia) jcbMateria.getSelectedItem();
-//	    // Obtener el profesor seleccionado
-//	    Profesor profesorSeleccionado = (Profesor) jcbProfesor.getSelectedItem();
-//	    // Obtener la nota seleccionada
-//	    int notaSeleccionada = (int) jcbNota.getSelectedItem();
-//
-//	    // Obtener la lista de estudiantes con la valoración de la materia y el profesor
-//	    List<Estudiante> estudiantesConValoracion = ControladorEstudiante.getInstance().buscarEstudiantesConValoracion(
-//	            materiaSeleccionada, profesorSeleccionado, notaSeleccionada);
-//
-//	    // Limpiar las listas existentes
-//	    listModelEstudiante.clear();
-//	    listModelEstudianteSel.clear();
-//
-//	    // Dividir los estudiantes en dos grupos: seleccionados y no seleccionados
-//	    for (Estudiante estudiante : estudiantesConValoracion) {
-//	        if (estudianteSeleccionado(estudiante)) {
-//	            listModelEstudianteSel.addElement(estudiante);
-//	        } else {
-//	            listModelEstudiante.addElement(estudiante);
-//	        }
-//	    }
-//	}
+
+	private void cargarEstudiantes() {
+
+		this.indiceProximalistaEstudiantesSeleccionados = 0;
+		this.indiceProximalistaEstudiantesNoSeleccionados = 0;
+		listModelEstudianteSel.removeAllElements();
+		listModelEstudiante.removeAllElements();
+		for (Estudiante e : this.estudiantes) {
+			ValoracionMateria v = ControladorValoracionMateria.getInstance().findByEstudianteAndProfesorAndMateria(
+					(Profesor) this.jcbProfesor.getSelectedItem(), (Materia) this.jcbMateria.getSelectedItem(), e);
+			if (v == null) {
+				listModelEstudiante.add(indiceProximalistaEstudiantesNoSeleccionados, e);
+				indiceProximalistaEstudiantesNoSeleccionados++;
+			} else {
+				if (v.getValoracion() == Float.parseFloat(jcbNota.getSelectedItem().toString())) {
+					this.listModelEstudianteSel.add(indiceProximalistaEstudiantesSeleccionados, e);
+					indiceProximalistaEstudiantesSeleccionados++;
+				} else {
+					listModelEstudiante.add(indiceProximalistaEstudiantesNoSeleccionados, e);
+					indiceProximalistaEstudiantesNoSeleccionados++;
+				}
+			}
+		}
+	}
 
 	// Verificar si un estudiante ya está seleccionado
 	private boolean estudianteSeleccionado(Estudiante estudiante) {
-	    return listModelEstudianteSel.contains(estudiante);
+		return listModelEstudianteSel.contains(estudiante);
 	}
-	
-	
+	private void guardar() {
+	    String nombreProfesor = ((Profesor) jcbProfesor.getSelectedItem()).getNombre();
+	    String nombreMateria = ((Materia) jcbMateria.getSelectedItem()).getNombre();
+	    int nota = (int) jcbNota.getSelectedItem();
+
+	    Profesor profesor = ControladorProfesor.getInstance().findByNombre(nombreProfesor);
+	    Materia materia = ControladorMateria.getInstance().findByNombre(nombreMateria);
+
+	    if (profesor != null && materia != null) {
+	        for (int i = 0; i < listModelEstudianteSel.size(); i++) {
+	            Estudiante estudiante = listModelEstudianteSel.getElementAt(i);
+	            ValoracionMateria valoracion = ControladorValoracionMateria.getInstance()
+	                    .findByEstudianteAndProfesorAndMateria(profesor, materia, estudiante);
+	            if (valoracion == null) {
+	                valoracion = new ValoracionMateria();
+	                valoracion.setIdProfesor(profesor.getId());
+	                valoracion.setIdMateria(materia.getId());
+	                valoracion.setValoracion(nota);
+	                // Guardar nueva valoración en la base de datos
+	                ControladorValoracionMateria.getInstance().create(valoracion);
+	            } else {
+	                valoracion.setValoracion(nota);
+	                // Actualizar la valoración en la base de datos
+	                ControladorValoracionMateria.getInstance().edit(valoracion);
+	            }
+	        }
+	        // Actualizar la lista de estudiantes seleccionados
+	        cargarEstudiantes();
+	    }
+	}
+
+
 }
