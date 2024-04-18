@@ -1,6 +1,7 @@
 package centroEducativo.entities;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,6 +19,7 @@ public class ValoracionMateria extends centroEducativo.entities.Entidad implemen
 	private int idProfesor;
 	private int idMateria;
 	private int valoracion;
+	private Date fecha;
 	
 	
 	public ValoracionMateria() {
@@ -47,6 +49,11 @@ public class ValoracionMateria extends centroEducativo.entities.Entidad implemen
 	public void setValoracion(int valoracion) {
 		this.valoracion = valoracion;
 	}
-	
+	public Date getFecha() {
+		return fecha;
+	}
+	public void setFecha(Date fecha) {
+		this.fecha = fecha;
+	}
 	
 }

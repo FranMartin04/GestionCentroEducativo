@@ -23,11 +23,16 @@ import java.awt.Color;
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.DefaultListModel;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.awt.event.ActionEvent;
+import javax.swing.JFormattedTextField;
 
 public class PanelValoracionMateria extends JFrame {
 
@@ -43,6 +48,7 @@ public class PanelValoracionMateria extends JFrame {
 	private int indiceProximalistaEstudiantesSeleccionados = 0;
 	private int indiceProximalistaEstudiantesNoSeleccionados = 0;
 	private List<Estudiante> estudiantes = new ArrayList<Estudiante>();
+	private JFormattedTextField jFormattedTextFieldDate;
 	// private List<Estudiante> estudiantes =
 	// ControladorEstudiante.getInstance().findPorEstudiante();
 
@@ -82,9 +88,9 @@ public class PanelValoracionMateria extends JFrame {
 		contentPane.add(panel_1, gbc_panel_1);
 		GridBagLayout gbl_panel_1 = new GridBagLayout();
 		gbl_panel_1.columnWidths = new int[] { 0, 0, 0 };
-		gbl_panel_1.rowHeights = new int[] { 0, 0, 0, 0, 0 };
+		gbl_panel_1.rowHeights = new int[] { 0, 0, 0, 0, 0, 0 };
 		gbl_panel_1.columnWeights = new double[] { 0.0, 1.0, Double.MIN_VALUE };
-		gbl_panel_1.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
+		gbl_panel_1.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
 		panel_1.setLayout(gbl_panel_1);
 
 		JLabel lblNewLabel = new JLabel("Materia:");
@@ -152,9 +158,25 @@ public class PanelValoracionMateria extends JFrame {
 				cargarEstudiantes();
 			}
 		});
+
+		JLabel lblNewLabel_5 = new JLabel("Fecha:");
+		GridBagConstraints gbc_lblNewLabel_5 = new GridBagConstraints();
+		gbc_lblNewLabel_5.insets = new Insets(0, 0, 5, 5);
+		gbc_lblNewLabel_5.anchor = GridBagConstraints.EAST;
+		gbc_lblNewLabel_5.gridx = 0;
+		gbc_lblNewLabel_5.gridy = 3;
+		panel_1.add(lblNewLabel_5, gbc_lblNewLabel_5);
+
+		GridBagConstraints gbc_jftf = new GridBagConstraints();
+		gbc_jftf.insets = new Insets(0, 0, 5, 5);
+		gbc_jftf.fill = GridBagConstraints.HORIZONTAL;
+		gbc_jftf.gridx = 1;
+		gbc_jftf.gridy = 3;
+		panel_1.add(getJFormattedTextFieldDatePersonalizado(), gbc_jftf);
+
 		GridBagConstraints gbc_btnActualiza = new GridBagConstraints();
 		gbc_btnActualiza.gridx = 3;
-		gbc_btnActualiza.gridy = 3;
+		gbc_btnActualiza.gridy = 4;
 		panel_1.add(btnActualiza, gbc_btnActualiza);
 
 		JPanel panel = new JPanel();
@@ -283,9 +305,9 @@ public class PanelValoracionMateria extends JFrame {
 
 		JButton btnGuardar = new JButton("Guardar las notas de todos los alumnos seleccionados");
 		btnGuardar.addActionListener(new ActionListener() {
-		    public void actionPerformed(ActionEvent arg0) {
-		    	guardar();
-		    }
+			public void actionPerformed(ActionEvent arg0) {
+				guardar();
+			}
 		});
 		GridBagConstraints gbc_btnGuardar = new GridBagConstraints();
 		gbc_btnGuardar.anchor = GridBagConstraints.EAST;
@@ -367,40 +389,65 @@ public class PanelValoracionMateria extends JFrame {
 		}
 	}
 
-	// Verificar si un estudiante ya está seleccionado
-	private boolean estudianteSeleccionado(Estudiante estudiante) {
-		return listModelEstudianteSel.contains(estudiante);
-	}
 	private void guardar() {
-	    String nombreProfesor = ((Profesor) jcbProfesor.getSelectedItem()).getNombre();
-	    String nombreMateria = ((Materia) jcbMateria.getSelectedItem()).getNombre();
-	    int nota = (int) jcbNota.getSelectedItem();
+		String nombreProfesor = ((Profesor) jcbProfesor.getSelectedItem()).getNombre();
+		String nombreMateria = ((Materia) jcbMateria.getSelectedItem()).getNombre();
+		int nota = (int) jcbNota.getSelectedItem();
+		Date fecha = (Date) jFormattedTextFieldDate.getValue();
+		
 
-	    Profesor profesor = ControladorProfesor.getInstance().findByNombre(nombreProfesor);
-	    Materia materia = ControladorMateria.getInstance().findByNombre(nombreMateria);
+		Profesor profesor = ControladorProfesor.getInstance().findByNombre(nombreProfesor);
+		Materia materia = ControladorMateria.getInstance().findByNombre(nombreMateria);
 
-	    if (profesor != null && materia != null) {
-	        for (int i = 0; i < listModelEstudianteSel.size(); i++) {
-	            Estudiante estudiante = listModelEstudianteSel.getElementAt(i);
-	            ValoracionMateria valoracion = ControladorValoracionMateria.getInstance()
-	                    .findByEstudianteAndProfesorAndMateria(profesor, materia, estudiante);
-	            if (valoracion == null) {
-	                valoracion = new ValoracionMateria();
-	                valoracion.setIdProfesor(profesor.getId());
-	                valoracion.setIdMateria(materia.getId());
-	                valoracion.setValoracion(nota);
-	                // Guardar nueva valoración en la base de datos
-	                ControladorValoracionMateria.getInstance().create(valoracion);
-	            } else {
-	                valoracion.setValoracion(nota);
-	                // Actualizar la valoración en la base de datos
-	                ControladorValoracionMateria.getInstance().edit(valoracion);
+		if (profesor != null && materia != null) {
+			for (int i = 0; i < listModelEstudianteSel.size(); i++) {
+				Estudiante estudiante = listModelEstudianteSel.getElementAt(i);
+				ValoracionMateria valoracion = ControladorValoracionMateria.getInstance()
+						.findByEstudianteAndProfesorAndMateria(profesor, materia, estudiante);
+				if (valoracion == null) {
+					valoracion = new ValoracionMateria();
+					valoracion.setIdProfesor(profesor.getId());
+					valoracion.setIdMateria(materia.getId());
+					valoracion.setValoracion(nota);
+					valoracion.setFecha(fecha);
+					// Guardar nueva valoración en la base de datos
+					ControladorValoracionMateria.getInstance().create(valoracion);
+				} else {
+					valoracion.setValoracion(nota);
+					// Actualizar la valoración en la base de datos
+					ControladorValoracionMateria.getInstance().edit(valoracion);
+				}
+			}
+			// Actualizar la lista de estudiantes seleccionados
+			cargarEstudiantes();
+		}
+	}
+
+	private JFormattedTextField getJFormattedTextFieldDatePersonalizado() {
+	    jFormattedTextFieldDate = new JFormattedTextField(new JFormattedTextField.AbstractFormatter() {
+	        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+	        @Override
+	        public String valueToString(Object value) throws ParseException {
+	            if (value != null && value instanceof Date) {
+	                return sdf.format(((Date) value));
+	            }
+	            return "";
+	        }
+
+	        @Override
+	        public Object stringToValue(String text) throws ParseException {
+	            try {
+	                return sdf.parse(text);
+	            } catch (Exception e) {
+	                JOptionPane.showMessageDialog(null, "Error en la fecha");
+	                return null;
 	            }
 	        }
-	        // Actualizar la lista de estudiantes seleccionados
-	        cargarEstudiantes();
-	    }
+	    });
+	    jFormattedTextFieldDate.setColumns(20);
+	    jFormattedTextFieldDate.setValue(new Date());
+	    return jFormattedTextFieldDate;
 	}
-
 
 }
